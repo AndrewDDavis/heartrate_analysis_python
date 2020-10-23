@@ -394,13 +394,21 @@ def plot_breathing(working_data, measures, show=True, figsize=None): # pragma: n
         return fig
 
 
-def report(measures):
-    '''print measures in a readable format with units'''
+def report(working_data, measures, outfile=None, csvfile=False):
+    '''Print info and measures in a readable format with units
 
+    By default prints to stdout, but writes to file with increased precision
+    if passed a file name to outfile.
+
+    Uses a simple tabular format by default, or CSV format if
+    csvfile is True.
+    '''
+
+    out_str = ""
+
+    # Formatted measures
     def label_formatter(m):
-        if m == 'bpm':
-            return 'BPM'
-        elif m == 'ibi':
+        if m == 'ibi':
             return 'IBI (ms)'
         elif m == 'sdnn':
             return 'SDNN (ms)'
@@ -442,11 +450,41 @@ def report(measures):
             return str.upper(m)
 
     # header
-    str_fmt = "{:<14} {:<15}"
-    print(str_fmt.format('Measure','Value'))
-    print(str_fmt.format('-----------','---------'))
+    if csvfile:
+        str_fmt = '{},{}\n'
+    else:
+        str_fmt = '{:<14} {:<15}\n'
+
+    out_str += str_fmt.format("Measure","Value")
+    out_str += str_fmt.format("-----------","---------")
 
     # table lines
-    str_fmt = "{:<14} {:< #15.3g}"
-    for k, v in m.items():
-        print(str_fmt.format(label_formatter(k), v))
+    if csvfile:
+        str_fmt = '{},{:#.9g}\n'
+    else:
+        str_fmt = '{:<14} {:< #15.3g}\n'
+
+    for k, v in measures.items():
+        out_str += str_fmt.format(label_formatter(k), v)
+
+    # Info
+    if csvfile:
+        str_fmt = '{},{:#0.2g}\n'
+    else:
+        out_str += "\n"
+        str_fmt = '{:<14} {:< #15.2g}\n'
+
+    best_ma = working_data['best']
+    out_str += str_fmt.format("Best MA (%)", best_ma)
+
+    n_rmbeats = len(working_data['removed_beats'])
+    pc_rmbeats = n_rmbeats/len(working_data['RR_list'])
+    out_str += str_fmt.format("Removed beats", n_rmbeats)
+    out_str += str_fmt.format("Removed %", pc_rmbeats)
+
+    # print or write out
+    if outfile is None:
+        print(out_str)
+    else:
+        with open(outfile, 'w') as outfh:
+            outfh.write(out_str)
