@@ -21,7 +21,7 @@ from .filtering import filter_signal, hampel_filter, hampel_correcter, \
                        remove_baseline_wander, smooth_signal
 from .peakdetection import make_windows, append_dict, fit_peaks, check_peaks, \
                            check_binary_quality, interpolate_peaks
-from .visualizeutils import plotter, segment_plotter, plot_poincare, plot_breathing
+from .visualizeutils import plotter, segment_plotter, plot_poincare, plot_breathing, report
 from .analysis import calc_rr, calc_rr_segment, clean_rr_intervals, calc_ts_measures, \
                       calc_fd_measures, calc_breathing, calc_poincare
 
@@ -38,6 +38,7 @@ __all__ = ['enhance_peaks',
            'load_exampledata',
            'plotter',
            'plot_breathing',
+           'report',
            'plot_poincare',
            'process',
            'process_rr',
