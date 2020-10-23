@@ -13,7 +13,8 @@ from . import config
 __all__ = ['plotter',
            'segment_plotter',
            'plot_poincare',
-           'plot_breathing']
+           'plot_breathing',
+           'report']
 
 def plotter(working_data, measures, show=True, figsize=None,
             title='Heart Rate Signal Peak Detection', moving_average=False): # pragma: no cover
@@ -392,3 +393,60 @@ def plot_breathing(working_data, measures, show=True, figsize=None): # pragma: n
     else:
         return fig
 
+
+def report(measures):
+    '''print measures in a readable format with units'''
+
+    def label_formatter(m):
+        if m == 'bpm':
+            return 'BPM'
+        elif m == 'ibi':
+            return 'IBI (ms)'
+        elif m == 'sdnn':
+            return 'SDNN (ms)'
+        elif m == 'sdsd':
+            return 'SDSD (ms)'
+        elif m == 'rmssd':
+            return 'RMSSD (ms)'
+        elif m == 'pnn20':
+            return 'pNN20'
+        elif m == 'pnn50':
+            return 'pNN50'
+        elif m == 'hr_mad':
+            return 'HR_MAD (ms)'
+        elif m == 'sd1':
+            return 'SD1 (ms)'
+        elif m == 'sd2':
+            return 'SD2 (ms)'
+        elif m == 's':
+            return 'S (ms^2)'
+        elif m == 'vlf':
+            return 'VLF (ms^2)'
+        elif m == 'lf':
+            return 'LF (ms^2)'
+        elif m == 'hf':
+            return 'HF (ms^2)'
+        elif m == 'p_total':
+            return 'P_total (ms^2)'
+        elif m == 'vlf_perc':
+            return 'VLF %'
+        elif m == 'lf_perc':
+            return 'LF %'
+        elif m == 'hf_perc':
+            return 'HF %'
+        elif m == 'lf_nu':
+            return 'LF (nu)'
+        elif m == 'hf_nu':
+            return 'HF (nu)'
+        else:
+            return str.upper(m)
+
+    # header
+    str_fmt = "{:<14} {:<15}"
+    print(str_fmt.format('Measure','Value'))
+    print(str_fmt.format('-----------','---------'))
+
+    # table lines
+    str_fmt = "{:<14} {:< #15.3g}"
+    for k, v in m.items():
+        print(str_fmt.format(label_formatter(k), v))
