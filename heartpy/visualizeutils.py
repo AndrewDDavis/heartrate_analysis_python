@@ -479,8 +479,8 @@ def report(working_data, measures, outfile=None, csvfile=False):
 
     n_rmbeats = len(working_data['removed_beats'])
     pc_rmbeats = n_rmbeats/len(working_data['RR_list'])
-    out_str += str_fmt.format("Removed beats", n_rmbeats)
-    out_str += str_fmt.format("Removed %", pc_rmbeats)
+    out_str += str_fmt.format("Excl. peaks", n_rmbeats)
+    out_str += str_fmt.format("Excl. %", pc_rmbeats)
 
     # print or write out
     if outfile is None:
