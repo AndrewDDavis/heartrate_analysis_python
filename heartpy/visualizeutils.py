@@ -394,7 +394,7 @@ def plot_breathing(working_data, measures, show=True, figsize=None): # pragma: n
         return fig
 
 
-def plot_psd(working_data, measures, show=True, figsize=None):
+def plot_psd(working_data, show=True, figsize=None):
     """Plot the RRi PSD produced by the frequency domain analysis.
     """
 
@@ -416,7 +416,7 @@ def plot_psd(working_data, measures, show=True, figsize=None):
     ax.axvspan(0.15,   0.40, alpha=0.3, color='tab:orange')
 
     # label regions
-    dmax = hrv_data['psd'].max()
+    dmax = working_data['psd'].max()
     ax.text(0.021, dmax, 'VLF', horizontalalignment='center')
     ax.text(0.095, dmax, 'LF', horizontalalignment='center')
     ax.text(0.275, dmax, 'HF', horizontalalignment='center')
