@@ -394,6 +394,40 @@ def plot_breathing(working_data, measures, show=True, figsize=None): # pragma: n
         return fig
 
 
+def plot_psd(working_data, measures, show=True, figsize=None):
+    """Plot the RRi PSD produced by the frequency domain analysis.
+    """
+
+    # plot the periodogram of RR intervals
+    fig, ax = plt.subplots(figsize=figsize)
+
+    ax.set_xlabel('frequency [Hz]')
+    ax.set_ylabel('PSD [ms^2/Hz]')
+    ax.set_title('RRi Spectrum')
+
+    ax.set_xlim([0, 0.42])
+    # ax.set_ylim([10, 2e5])
+
+    ax.plot(working_data['frq'], working_data['psd'], 'k-')
+
+    # colorize regions
+    ax.axvspan(0.0033, 0.04, alpha=0.3, color='tab:blue')
+    ax.axvspan(0.04,   0.15, alpha=0.3, color='tab:gray')
+    ax.axvspan(0.15,   0.40, alpha=0.3, color='tab:orange')
+
+    # label regions
+    dmax = hrv_data['psd'].max()
+    ax.text(0.021, dmax, 'VLF', horizontalalignment='center')
+    ax.text(0.095, dmax, 'LF', horizontalalignment='center')
+    ax.text(0.275, dmax, 'HF', horizontalalignment='center')
+
+
+    if show:
+        fig.show()
+    else:
+        return fig
+
+
 def report(working_data, measures, outfile=None, csvfile=False):
     '''Print info and measures in a readable format with units
 
