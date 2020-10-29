@@ -503,16 +503,16 @@ def report(working_data, measures, outfile=None, csvfile=False):
 
     # Info
     if csvfile:
-        str_fmt = '{},{:#0.2g}\n'
+        str_fmt = '{},{:#0.3g}\n'
     else:
         out_str += "\n"
-        str_fmt = '{:<14} {:< #15.2g}\n'
+        str_fmt = '{:<14} {:< #15.3g}\n'
 
     best_ma = working_data['best']
     out_str += str_fmt.format("Best MA (%)", best_ma)
 
     n_rmbeats = len(working_data['removed_beats'])
-    pc_rmbeats = n_rmbeats/len(working_data['RR_list'])
+    pc_rmbeats = 100*n_rmbeats/len(working_data['RR_list'])
     out_str += str_fmt.format("Excl. peaks", n_rmbeats)
     out_str += str_fmt.format("Excl. %", pc_rmbeats)
 
