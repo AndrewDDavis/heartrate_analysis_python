@@ -281,7 +281,10 @@ def fit_peaks(hrdata, rol_mean, sample_rate, bpmmin=40, bpmmax=180, working_data
     '''
 
     # moving average values to test
-    ma_perc_list = [5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 150, 200, 300]
+    # ma_perc_list = [5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 150, 200, 300]
+    ma_perc_list = np.linspace(1, 16, 150)**2
+
+    # !!! consider iterating through multiple windows here too
 
     rrsd = []
     valid_ma = []
@@ -297,8 +300,10 @@ def fit_peaks(hrdata, rol_mean, sample_rate, bpmmin=40, bpmmax=180, working_data
             valid_ma.append([_rrsd, _ma_perc])
 
     if len(valid_ma) > 0:
-        working_data['best'] = min(valid_ma, key=lambda t: t[0])[1]
-        working_data = detect_peaks(hrdata, rol_mean, min(valid_ma, key=lambda t: t[0])[1],
+        min_rrsd = min(valid_ma, key=lambda t: t[0])[1]
+        working_data['best'] = min_rrsd
+        working_data['valid_ma'] = valid_ma
+        working_data = detect_peaks(hrdata, rol_mean, min_rrsd,
                                     sample_rate, update_dict=True, working_data=working_data)
         return working_data
     else:
@@ -352,15 +357,13 @@ def check_peaks(rr_arr, peaklist, ybeat, reject_segmentwise=False, working_data=
     peaklist = np.array(peaklist)
     ybeat = np.array(ybeat)
 
-    # define RR range as mean +/- 30%, with a minimum of 300
-    mean_rr = np.mean(rr_arr)
-    thirty_perc = 0.3 * mean_rr
-    if thirty_perc <= 300:
-        upper_threshold = mean_rr + 300
-        lower_threshold = mean_rr - 300
-    else:
-        upper_threshold = mean_rr + thirty_perc
-        lower_threshold = mean_rr - thirty_perc
+    # define RR range as mean +/- 30%, with a minimum range of +/- 300
+    mean_rr = rr_arr.mean()
+    range_limit = np.max([300., 0.3*mean_rr])
+
+    upper_threshold = mean_rr + range_limit
+    lower_threshold = mean_rr - range_limit
+
 
     # identify peaks to exclude based on RR interval
     rem_idx = np.where((rr_arr <= lower_threshold) | (rr_arr >= upper_threshold))[0] + 1
